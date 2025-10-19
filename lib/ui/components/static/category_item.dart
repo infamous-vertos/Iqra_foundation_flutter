@@ -7,8 +7,7 @@ import '../../../gen/assets.gen.dart';
 import '../text/text_view.dart';
 
 class CategoryItem extends StatelessWidget {
-  final String iconPath, title;
-  final int amount;
+  final String iconPath, title, amount;
   final Color iconColor;
   const CategoryItem({
     super.key,

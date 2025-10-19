@@ -53,7 +53,7 @@ class DashboardScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Padding(
+        child: Obx(() => Padding(
           padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 5.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,13 +80,13 @@ class DashboardScreen extends StatelessWidget {
                   children: [
                     CategoryItem(
                       title: "Total Balance",
-                      amount: 5000,
+                      amount: controller.balance.value,
                       iconPath: Assets.images.wallet.path,
                       iconColor: Colors.green,
                     ),
                     CategoryItem(
                       title: "Total Expense",
-                      amount: 200,
+                      amount: controller.expense.value,
                       iconPath: Assets.images.spending.path,
                       iconColor: Colors.red,
                     ),
@@ -104,87 +104,17 @@ class DashboardScreen extends StatelessWidget {
                   child: Column(
                     spacing: 8.h,
                     children: [
-                      ActivityTile(
-                        color: Colors.green,
-                        name: "Md Saif Uddin",
-                        subtitle:
-                            "${UiConstants.rupeeSymbol}1000 Deposited on 8 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.deposite.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.red,
-                        name: "Md Raja Uddin",
-                        subtitle:
-                            "${UiConstants.rupeeSymbol}1000 Withdrawn on 7 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.expense.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.red,
-                        name: "Md Raja Uddin",
-                        subtitle: "Rs. 1000 Withdrawn on 7 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.expense.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.red,
-                        name: "Md Raja Uddin",
-                        subtitle: "Rs. 1000 Withdrawn on 7 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.expense.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.green,
-                        name: "Md Saif Uddin",
-                        subtitle: "Rs. 1000 Deposited on 8 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.deposite.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.green,
-                        name: "Md Saif Uddin",
-                        subtitle: "Rs. 1000 Deposited on 8 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.deposite.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.green,
-                        name: "Md Saif Uddin",
-                        subtitle: "Rs. 1000 Deposited on 8 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.deposite.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.green,
-                        name: "Md Saif Uddin",
-                        subtitle: "Rs. 1000 Deposited on 8 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.deposite.path,
-                      ),
-                      ActivityTile(
-                        color: Colors.green,
-                        name: "Md Saif Uddin",
-                        subtitle: "Rs. 1000 Deposited on 8 Oct 25",
-                        imgUrl:
-                            "https://media.licdn.com/dms/image/v2/D4D03AQEuEpIMqUBfPg/profile-displayphoto-scale_400_400/B4DZhRB.7tGkAo-/0/1753706133954?e=1762992000&v=beta&t=9OZE0phWW1MsIdDgj1zVvjZh-fq0ltCo_solfh5Kyr0",
-                        iconPath: Assets.images.deposite.path,
-                      ),
+                      for(var item in controller.transactions)
+                        ActivityTile(
+                          item: item
+                        )
                     ],
                   ),
                 ),
               ),
             ],
           ),
-        ),
+        )),
       ),
     );
   }

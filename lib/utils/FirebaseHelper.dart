@@ -22,9 +22,40 @@ class FirebaseHelper{
   static DatabaseReference transactionsRef = bankingRef.child("transactions");
 
   static FirebaseAuth auth = FirebaseAuth.instance;
-  static final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
   //Transaction related Ops
+  static final transactionLimit = 20;
+  static Future<List<TransactionModel>?> getTransactions() async {
+    try{
+      final data = await transactionsRef
+          .orderByKey()
+          .limitToLast(transactionLimit)
+          .get();
+      if(data.exists){
+        return data.children.map((e) => TransactionModel.fromJson(e.value as Map)).toList();
+      }else{
+        return null;
+      }
+    }catch(e,s){
+      debugPrintStack(stackTrace: s);
+      return null;
+    }
+  }
+
+  static Future<TotalModel?> getTotal() async {
+    try{
+      final data = await totalRef.get();
+      if(data.exists){
+        return TotalModel.fromJson(data.value as Map);
+      }else{
+        return null;
+      }
+    }catch(e,s){
+      debugPrintStack(stackTrace: s);
+      return null;
+    }
+  }
+
   static Future<bool> deposit(TransactionModel model) async{
     try{
       if(!await checkConnectivity()){
