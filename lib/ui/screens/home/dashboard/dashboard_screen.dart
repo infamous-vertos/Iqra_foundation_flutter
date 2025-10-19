@@ -3,11 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iqra/ui/components/static/activity_tile.dart';
 import 'package:iqra/ui/components/text/text_view.dart';
-import 'package:iqra/ui/theme/app_colors.dart';
-
-import '../../../gen/assets.gen.dart';
-import '../../components/static/tile_item.dart';
-import '../../theme/ui_constants.dart';
+import '../../../../gen/assets.gen.dart';
+import '../../../components/static/category_item.dart';
+import '../../../theme/ui_constants.dart';
 import 'dashboard_controller.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -80,13 +78,13 @@ class DashboardScreen extends StatelessWidget {
                   spacing: 10.w,
                   runSpacing: 10.h,
                   children: [
-                    TileItem(
+                    CategoryItem(
                       title: "Total Balance",
                       amount: 5000,
                       iconPath: Assets.images.wallet.path,
                       iconColor: Colors.green,
                     ),
-                    TileItem(
+                    CategoryItem(
                       title: "Total Expense",
                       amount: 200,
                       iconPath: Assets.images.spending.path,

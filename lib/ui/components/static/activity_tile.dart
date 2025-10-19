@@ -20,10 +20,19 @@ class ActivityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r),
-          border: Border.all(width: 1.w, color: color),
-          color: color.withAlpha(20)
+          border: Border.all(width: 1.w, color: color.withAlpha(80)),
+          color: color.withAlpha(10),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.grey.withValues(alpha: 0.3),
+        //     offset: Offset(2.w, 2.h),
+        //     blurRadius: 0.r,
+        //     spreadRadius: 1.r, // changes position of shadow
+        //   ),
+        // ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +63,7 @@ class ActivityTile extends StatelessWidget {
           Spacer(),
           Padding(
             padding: EdgeInsets.only(right: 5.w, top: 5.h),
-            child: Image.asset(iconPath, width: 30.w, color: color,),
+            child: Image.asset(iconPath, width: 30.w, color: color.withAlpha(150),),
           )
         ],
       ),

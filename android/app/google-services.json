@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "391296051839",
+    "firebase_url": "https://iqra-foundation-bgp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "iqra-foundation-bgp",
+    "storage_bucket": "iqra-foundation-bgp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391296051839:android:f64b4fdccf711da4eded4a",
+        "android_client_info": {
+          "package_name": "com.inFamous.iqra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391296051839-ufcu8onqq5t2lphr3al7ece0hqaa6pfj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inFamous.iqra",
+            "certificate_hash": "581d1c85dc72bc7a00ef56a411e61d5ace81550f"
+          }
+        },
+        {
+          "client_id": "391296051839-4lgct8c8anm9nog79m3f9eukvijgohgv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGL7PQbtTDsT4VYKbhtwXR_XQkFYeC9vA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391296051839-4lgct8c8anm9nog79m3f9eukvijgohgv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391296051839-ra0mt1k4s9r2m7lot8hdl54jc2k8667v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inFamous.iqra"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

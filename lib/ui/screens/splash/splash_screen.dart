@@ -32,6 +32,7 @@ class SplashScreen extends StatelessWidget {
                   isOutlinedBtn: true.obs,
                   bgColor: AppColors.styleBlack,
                   icon: Assets.icons.icGoogle.svg(width: 20.h),
+                  funOnTap: controller.onTap,
                 ),
             ),
       ],

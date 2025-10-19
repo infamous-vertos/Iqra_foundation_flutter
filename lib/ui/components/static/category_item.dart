@@ -6,11 +6,11 @@ import 'package:iqra/ui/theme/ui_constants.dart';
 import '../../../gen/assets.gen.dart';
 import '../text/text_view.dart';
 
-class TileItem extends StatelessWidget {
+class CategoryItem extends StatelessWidget {
   final String iconPath, title;
   final int amount;
   final Color iconColor;
-  const TileItem({
+  const CategoryItem({
     super.key,
     required this.iconPath,
     required this.title,
