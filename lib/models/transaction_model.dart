@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iqra/models/total_model.dart';
 import 'package:iqra/models/user_model.dart';
 
@@ -12,6 +13,10 @@ class TransactionModel{
   late double amount;
   late TotalModel? totalBefore;
   late UserModel by, admin;
+  String? description;
+
+  //Internal Use
+  final isCollapsed = true.obs;
 
   TransactionModel({
     required this.id,
@@ -20,12 +25,14 @@ class TransactionModel{
     required this.amount,
     required this.by,
     required this.admin,
-    this.totalBefore
+    this.totalBefore,
+    this.description
   });
 
   TransactionModel.fromJson(Map json){
     id = json["id"];
     time = json["time"];
+    description = json["description"];
     type = getTransactionInstance(json["type"]);
     amount = double.tryParse(json["amount"].toString()) ?? 0.0;
     by = UserModel.fromJson(json["by"]);
@@ -41,12 +48,13 @@ class TransactionModel{
       "amount": amount.toDouble(),
       "by": by.toJson(),
       "admin": admin.toJson(),
-      "totalBefore": totalBefore?.toJson()
+      "totalBefore": totalBefore?.toJson(),
+      "description": description
     };
   }
 
   String getTransactionSubtitle(){
-    final date = Global.dateFormatOnlyDate.format(DateTime.fromMicrosecondsSinceEpoch(time));
+    final date = Global.dateFormatOnlyDate.format(DateTime.fromMillisecondsSinceEpoch(time));
     if(type == TransactionType.DEPOSIT){
       return "₹$amount deposited on $date";
     }else if(type == TransactionType.WITHDRAWAL){

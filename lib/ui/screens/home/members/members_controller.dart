@@ -11,11 +11,13 @@ class MembersController extends GetxController{
   final searchController = TextEditingController();
   final RxList<UserModel> tempList = <UserModel>[].obs;
   final RxList<UserModel> originalList = <UserModel>[].obs;
-  final isLoading = true.obs;
+  final isLoading = false.obs;
+  final isLoadingMore = false.obs;
   Timer? _debounce;
 
   @override
   void onReady() {
+    debugPrint("OnReady");
     fetchData();
   }
 
@@ -25,24 +27,23 @@ class MembersController extends GetxController{
     _debounce?.cancel();
   }
 
-  fetchData({bool isRefresh = false, String? query}) async {
+  fetchData({bool isRefresh = false, String? query, RxBool? isLoading}) async {
+    isLoading ??= this.isLoading;
+
     if(isLoading.isTrue) return;
     isLoading.value = true;
     final list = await FirebaseHelper.getMembers(isRefresh: isRefresh, searchText: query);
-    if(isRefresh){
-      if(query != null){
+    if(query == null){
+      if(isRefresh) {
         originalList.assignAll(list);
-      }
-      tempList.assignAll(list);
-    }else{
-      if(query != null){
-        tempList.addAll(list);
-      }else{
+      } else {
         originalList.addAll(list);
-        tempList.assignAll(originalList);
       }
+      tempList.assignAll(originalList);
+    }else{
+      tempList.assignAll(list);
     }
-    debugPrint("Members: ${list}");
+    debugPrint("Members: ${list.map((e) => e.name).toList()}");
     isLoading.value = false;
   }
 

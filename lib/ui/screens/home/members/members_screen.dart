@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -6,8 +7,10 @@ import 'package:iqra/ui/components/input/input_box.dart';
 import 'package:iqra/ui/components/static/member_ui.dart';
 import 'package:iqra/ui/components/static/not_found.dart';
 import 'package:iqra/ui/components/text/text_view.dart';
+import 'package:iqra/utils/FirebaseHelper.dart';
 
 import '../../../../gen/assets.gen.dart';
+import '../../../components/shimmer/horizontal_shimmer.dart';
 import 'members_controller.dart';
 
 class MembersScreen extends StatelessWidget {
@@ -57,7 +60,7 @@ class MembersScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 16.h),
                       controller.isLoading.value
-                          ? Center(child: Assets.anim.animLoadingPlain.lottie())
+                          ? HorizontalShimmer(count: 8)
                           :
                       controller.tempList.isEmpty
                           ? NotFound(text: "No members found",)
@@ -70,6 +73,25 @@ class MembersScreen extends StatelessWidget {
                                       padding: EdgeInsets.only(bottom: 5.h),
                                       child: MemberUi(user: user),
                                     ),
+                                  Visibility(
+                                    visible: controller.searchController.text.isEmpty && controller.tempList.length % FirebaseHelper.limit == 0,
+                                    child: controller.isLoadingMore.value
+                                        ? HorizontalShimmer(count: 1)
+                                        : Padding(
+                                      padding: EdgeInsets.only(top: 10.h),
+                                      child: Center(
+                                        child: ResponsiveButton(
+                                            width: 100.w,
+                                            isOutlinedBtn: true.obs,
+                                            text: "Load more",
+                                            bgColor: Colors.grey.shade500,
+                                            funOnTap: (){
+                                              controller.fetchData(isLoading: controller.isLoadingMore);
+                                            },
+                                        ),
+                                      ),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),

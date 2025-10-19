@@ -25,12 +25,25 @@ class FirebaseHelper{
 
   //Transaction related Ops
   static final transactionLimit = 20;
-  static Future<List<TransactionModel>?> getTransactions() async {
+  static String? lastKey;
+  static Future<List<TransactionModel>?> getTransactions({bool isRefresh = false}) async {
     try{
-      final data = await transactionsRef
-          .orderByKey()
-          .limitToLast(transactionLimit)
-          .get();
+      var query = transactionsRef
+          .orderByKey();
+
+      if(!isRefresh && lastKey != null){
+        query = query.endBefore(lastKey);
+      }
+
+      query = query.limitToLast(transactionLimit);
+
+      final data = await query.get();
+
+      if(data.children.isNotEmpty){
+        lastKey = data.children.first.key;
+        debugPrint("LastKey - $lastKey");
+      }
+      debugPrint("Data Length - ${data.children.length}");
       if(data.exists){
         return data.children.map((e) => TransactionModel.fromJson(e.value as Map)).toList();
       }else{
@@ -230,9 +243,9 @@ class FirebaseHelper{
   }
 
   static final limit = 20;
-  static final limitForSearch = 2;
+  static final limitForSearch = 5;
   static int lastChildrenCount = 0;
-  static String? lastKey;
+  static String? lastName;
   static Future<List<UserModel>> getMembers({bool isRefresh = false, String? searchText}) async{
     try{
       debugPrint("Search - $searchText");
@@ -241,7 +254,7 @@ class FirebaseHelper{
         return [];
       }
 
-      if(searchText == null && !isRefresh && lastKey != null && (lastChildrenCount < limit || lastChildrenCount % limit != 0)) {
+      if(searchText == null && !isRefresh && lastName != null && (lastChildrenCount < limit || lastChildrenCount % limit != 0)) {
         return [];
       }
 
@@ -251,8 +264,8 @@ class FirebaseHelper{
       if(searchText != null){
         query = query.startAt(searchText)
             .endAt("$searchText\uf8ff");
-      }else if(lastKey != null){
-        query = query.startAfter(lastKey);
+      }else if(lastName != null){
+        query = query.startAfter(lastName);
       }
 
       query = query.limitToFirst(searchText != null ? limitForSearch : limit);
@@ -262,11 +275,12 @@ class FirebaseHelper{
       if(searchText == null){
         lastChildrenCount = data.children.length;
         if(data.children.isNotEmpty){
-          lastKey = data.children.last.key;
+          lastName = UserModel.fromJson(data.children.last.value as Map).name;
         }
       }
 
       debugPrint("getMembersCalled - ${data.children.length}");
+      debugPrint("lastKey - ${data.children.last.value}");
       return data.children.map((e) => UserModel.fromJson(e.value as Map)).toList();
     }catch(e,s){
       debugPrintStack(stackTrace: s);
