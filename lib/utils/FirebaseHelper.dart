@@ -6,7 +6,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:iqra/models/transaction_model.dart';
 import 'package:iqra/models/user_model.dart';
 
@@ -42,6 +41,40 @@ class FirebaseHelper{
       if(data.children.isNotEmpty){
         lastKey = data.children.first.key;
         debugPrint("LastKey - $lastKey");
+      }
+      debugPrint("Data Length - ${data.children.length}");
+      if(data.exists){
+        return data.children.map((e) => TransactionModel.fromJson(e.value as Map)).toList();
+      }else{
+        return null;
+      }
+    }catch(e,s){
+      debugPrintStack(stackTrace: s);
+      return null;
+    }
+  }
+
+  static final userTransactionLimit = 10;
+  static String? userLastKey;
+  static Future<List<TransactionModel>?> getUserTransactions({bool isRefresh = false}) async {
+    try{
+      final userId = getUserId();
+
+      var query = transactionsRef
+          .orderByChild("by/uid")
+          .equalTo(userId);
+
+      if(!isRefresh && userLastKey != null){
+        query = query.endBefore(userLastKey);
+      }
+
+      query = query.limitToLast(userTransactionLimit);
+
+      final data = await query.get();
+
+      if(data.children.isNotEmpty){
+        userLastKey = data.children.first.key;
+        debugPrint("LastKey - $userLastKey");
       }
       debugPrint("Data Length - ${data.children.length}");
       if(data.exists){
@@ -246,9 +279,14 @@ class FirebaseHelper{
   static final limitForSearch = 5;
   static int lastChildrenCount = 0;
   static String? lastName;
-  static Future<List<UserModel>> getMembers({bool isRefresh = false, String? searchText}) async{
+  static Future<List<UserModel>> getMembers({bool isRefresh = false, String? searchText, int? tempLimit}) async{
     try{
-      debugPrint("Search - $searchText");
+      debugPrint("Search - $searchText, isRefresh - $isRefresh");
+      debugPrint("lasName - $lastName");
+      if(isRefresh){
+        lastChildrenCount = 0;
+        lastName = null;
+      }
       searchText = searchText?.capitalize;
       if(!await checkConnectivity()){
         return [];
@@ -268,7 +306,7 @@ class FirebaseHelper{
         query = query.startAfter(lastName);
       }
 
-      query = query.limitToFirst(searchText != null ? limitForSearch : limit);
+      query = query.limitToFirst(tempLimit ?? (searchText != null ? limitForSearch : limit));
 
       final data = await query.get();
 

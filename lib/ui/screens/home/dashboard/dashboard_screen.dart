@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iqra/ui/components/dropdown/members_dropdown_dialog.dart';
 import 'package:iqra/ui/components/shimmer/horizontal_shimmer.dart';
 import 'package:iqra/ui/components/static/activity_tile.dart';
 import 'package:iqra/ui/components/text/text_view.dart';
 import '../../../../gen/assets.gen.dart';
+import '../../../../models/user_model.dart';
 import '../../../../utils/FirebaseHelper.dart';
 import '../../../components/button/responsive_button.dart';
 import '../../../components/input/input_box.dart';
@@ -26,7 +28,7 @@ class DashboardScreen extends StatelessWidget {
         children: [
           FloatingActionButton(
             heroTag: "deposit",
-            onPressed: () {},
+            onPressed: openDepositDialog,
             elevation: 10.h,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -41,9 +43,7 @@ class DashboardScreen extends StatelessWidget {
           ),
           FloatingActionButton(
             heroTag: "expense",
-            onPressed: () {
-              openExpenseDialog();
-            },
+            onPressed: openExpenseDialog,
             elevation: 10.h,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -145,6 +145,60 @@ class DashboardScreen extends StatelessWidget {
             ],
           ),
         )),
+      ),
+    );
+  }
+
+  openDepositDialog() {
+    final amount = "".obs;
+    final description = "".obs;
+    final loader = false.obs;
+    final selectedMember = Rx<UserModel?>(null);
+
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextView(
+                text: "Add Deposit",
+                fontWeight: FontWeight.w700,
+                size: 18.sp,
+                color: Colors.green,
+              ),
+              // Divider(),
+              SizedBox(height: 10.h),
+              MembersDropdownDialog(
+                  selectedValue: selectedMember,
+                debounce: controller.debounce,
+              ),
+              SizedBox(height: 10.h),
+              InputBox(isOutlined: true, hint: "Amount", text: amount, type: TextInputType.number,),
+              SizedBox(height: 10.h),
+              InputBox(isOutlined: true, hint: "Description", text: description),
+
+              SizedBox(height: 20.h),
+
+              ResponsiveButton(
+                text: "Submit",
+                loader: loader,
+                funOnTap: () async {
+                  loader.value = true;
+                  await controller.deposit(amount: amount.value, desc: description.value, by: selectedMember.value);
+                  loader.value = false;
+                },),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -18,7 +18,7 @@ class MembersController extends GetxController{
   @override
   void onReady() {
     debugPrint("OnReady");
-    fetchData();
+    fetchData(isRefresh: true);
   }
 
 
@@ -28,6 +28,14 @@ class MembersController extends GetxController{
   }
 
   fetchData({bool isRefresh = false, String? query, RxBool? isLoading}) async {
+    query = (query != null && query.isEmpty) ? null : query;
+
+    if(!isRefresh && query == null && originalList.isNotEmpty){
+      debugPrint("Original - ${originalList.length}");
+      tempList.assignAll(originalList);
+      return;
+    }
+
     isLoading ??= this.isLoading;
 
     if(isLoading.isTrue) return;
@@ -48,14 +56,19 @@ class MembersController extends GetxController{
   }
 
   searchMembers(String query) async {
-    if(query.isEmpty){
-      tempList.value = originalList;
-      return;
-    }
+    // if(query.isEmpty){
+    //   tempList.value = originalList;
+    //   return;
+    // }
+
     if(_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(Duration(milliseconds: 500), (){
-      fetchData(query: query, isRefresh: true);
-    });
+    if(query.isEmpty){
+      fetchData();
+    }else{
+      _debounce = Timer(Duration(milliseconds: 700), (){
+        fetchData(query: query, isRefresh: true);
+      });
+    }
   }
 
   Future<void> addMember(String name, String email, String phone) async {

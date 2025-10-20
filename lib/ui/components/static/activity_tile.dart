@@ -41,6 +41,9 @@ class ActivityTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+                width: 40.w,
+                height: 40.w,
+                margin: EdgeInsets.only(top: 3.h),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100.r),
                     border: Border.all(width: 1.w, color: Colors.black)
@@ -49,9 +52,8 @@ class ActivityTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(100.r),
                   child: Image.network(
                     item.by.photoUrl ?? "NA",
-                    width: 40.w,
-                    height: 40.w,
                     fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Icon(Icons.person_sharp, size: 24.w,)
                   ),
                 )
             ),
@@ -63,7 +65,10 @@ class ActivityTile extends StatelessWidget {
                 children: [
                   TextView(text: item.by.name),
                   TextView(text: item.getTransactionSubtitle() , size: 12.sp, fontWeight: FontWeight.w400,),
-                  TextView(text: "Admin - ${item.by.uid == item.admin.uid ? "Self" : item.admin.name}" , size: 12.sp, fontWeight: FontWeight.w400,),
+                  Visibility(
+                    visible: item.type == TransactionType.DEPOSIT,
+                      child: TextView(text: "Admin - ${item.by.uid == item.admin.uid ? "Self" : item.admin.name}" , size: 12.sp, fontWeight: FontWeight.w400,)
+                  ),
                   if(item.description != null)
                     Obx(() => Collapsible(
                         child: TextView(text: "Description - ${item.description!}", size: 12.sp, fontWeight: FontWeight.w400,),

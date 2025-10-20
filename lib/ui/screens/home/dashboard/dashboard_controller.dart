@@ -7,6 +7,7 @@ import 'package:iqra/utils/FirebaseHelper.dart';
 import 'package:iqra/utils/global.dart';
 
 import '../../../../models/transaction_model.dart';
+import '../../../../models/user_model.dart';
 
 class DashboardController extends GetxController{
   final transactions = <TransactionModel>[].obs;
@@ -14,6 +15,7 @@ class DashboardController extends GetxController{
   final expense = "---".obs;
   final isLoading = false.obs;
   final isLoadingMore = false.obs;
+  Timer? debounce;
 
   @override
   void onReady() {
@@ -23,12 +25,19 @@ class DashboardController extends GetxController{
     super.onReady();
   }
 
+
+  @override
+  void onClose() {
+    debounce?.cancel();
+    super.onClose();
+  }
+
   getTotal() async {
     final result = await FirebaseHelper.getTotal();
     debugPrint("getTotal - $result");
     if(result != null){
-      balance.value = result.balance.toString();
-      expense.value = result.expense.toString();
+      balance.value = result.balance.toInt().toString();
+      expense.value = result.expense.toInt().toString();
     }else{
       balance.value = "Error";
       expense.value = "Error";
@@ -55,22 +64,58 @@ class DashboardController extends GetxController{
     isLoading.value = false;
   }
 
-  deposit() async{
-    final time = DateTime.now().millisecondsSinceEpoch;
-    final userModel = await FirebaseHelper.getUserModel();
-    debugPrint("User - $userModel");
-    final model = TransactionModel(
-      id: time,
-      time: time,
-      amount: 10,
-      type: TransactionType.WITHDRAWAL,
-      by: userModel!,
-      admin: userModel
-    );
-    FirebaseHelper.expense(model);
+  Future<void> deposit({required String amount, required String desc, required UserModel? by}) async{
+    Global.hideKeyboard();
+
+    if(by == null){
+      EasyLoading.showToast("Select a member");
+      return;
+    }
+
+    if(amount.isEmpty){
+      EasyLoading.showToast("Enter amount");
+      return;
+    }
+
+    if(double.tryParse(amount) == null){
+      EasyLoading.showToast("Enter valid amount");
+      return;
+    }
+
+    // if(desc.isEmpty){
+    //   EasyLoading.showToast("Enter description");
+    //   return;
+    // }
+
+    try{
+      final time = DateTime.now().millisecondsSinceEpoch;
+      final userModel = await FirebaseHelper.getUserModel();
+      debugPrint("User - $userModel");
+      final model = TransactionModel(
+          id: time,
+          time: time,
+          amount: double.tryParse(amount) ?? 0.0,
+          type: TransactionType.DEPOSIT,
+          by: by,
+          admin: userModel!,
+          description: desc
+      );
+      final result = await FirebaseHelper.deposit(model);
+      debugPrint("Deposit - $result");
+      if(result){
+        getTransactions(isRefresh: true);
+        getTotal();
+        Get.back();
+      }else{
+        EasyLoading.showToast("Something went wrong");
+      }
+    }catch(e,s){
+      debugPrintStack(stackTrace: s);
+    }
   }
 
   Future<void> addExpense({required String amount, required String desc}) async{
+    Global.hideKeyboard();
     if(amount.isEmpty){
       EasyLoading.showToast("Enter amount");
       return;

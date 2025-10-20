@@ -7,7 +7,8 @@ import '../../../gen/assets.gen.dart';
 
 class MemberUi extends StatelessWidget {
   final UserModel user;
-  const MemberUi({super.key, required this.user});
+  bool? isChecked;
+  MemberUi({super.key, required this.user, this.isChecked});
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +54,16 @@ class MemberUi extends StatelessWidget {
             ),
             
             Spacer(),
-            
-            Icon(Icons.arrow_forward)
+
+            isChecked != null
+            ? Visibility(
+              visible: isChecked!,
+              child: Icon(
+                Icons.check,
+                color: Colors.green,
+                size: 16.r,
+              ),
+            ) : Icon(Icons.arrow_forward)
           ],
         ),
       ),

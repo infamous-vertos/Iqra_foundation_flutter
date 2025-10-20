@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:iqra/utils/global.dart';
 
 class UserModel {
   final String uid, name;
@@ -37,6 +38,11 @@ class UserModel {
       'joinedOn': joinedOn,
       'status': getUserStatusString(status)
     };
+  }
+
+  String getJoinedOn(){
+    if(joinedOn == null) return "NA";
+    return Global.dateFormatOnlyDate.format(DateTime.fromMillisecondsSinceEpoch(joinedOn!));
   }
 }
 

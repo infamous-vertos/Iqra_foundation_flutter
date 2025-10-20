@@ -58,10 +58,7 @@ class InputBox extends StatelessWidget {
           color: isValidated.value || pattern == null
               ? (bgColor ?? Colors.white)
               : Colors.red[100],
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(borderRadius ?? 4.r),
-            topRight: Radius.circular(borderRadius ?? 4.r),
-          ),
+          borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
         ),
         child: TextField(
           textInputAction: TextInputAction.done,
@@ -95,13 +92,14 @@ class InputBox extends StatelessWidget {
             ),
             enabledBorder: isOutlined
                 ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,
                       width: 1.h,
                     ),
                   )
                 : UnderlineInputBorder(
-                    // borderRadius: BorderRadius.circular(borderRadius ?? 4.r),
+                    borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
                     borderSide: BorderSide(
                       color: AppColors.styleBlack,
                       width: 1.7.h,
@@ -109,13 +107,14 @@ class InputBox extends StatelessWidget {
                   ),
             focusedBorder: isOutlined
                 ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,
                       width: 1.h,
                     ),
                   )
                 : UnderlineInputBorder(
-                    // borderRadius: BorderRadius.circular(borderRadius ?? 4.r),
+                    borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
                     borderSide: BorderSide(
                       color: AppColors.primary,
                       width: 1.7.h,
