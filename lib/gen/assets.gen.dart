@@ -41,6 +41,9 @@ class $AssetsAnimGen {
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/ic_edit.svg
+  SvgGenImage get icEdit => const SvgGenImage('assets/icons/ic_edit.svg');
+
   /// File path: assets/icons/ic_google.svg
   SvgGenImage get icGoogle => const SvgGenImage('assets/icons/ic_google.svg');
 
@@ -54,7 +57,7 @@ class $AssetsIconsGen {
   SvgGenImage get icPerson => const SvgGenImage('assets/icons/ic_person.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [icGoogle, icGroup, icHome, icPerson];
+  List<SvgGenImage> get values => [icEdit, icGoogle, icGroup, icHome, icPerson];
 }
 
 class $AssetsImagesGen {

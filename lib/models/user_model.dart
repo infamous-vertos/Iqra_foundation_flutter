@@ -4,7 +4,7 @@ import 'package:iqra/utils/global.dart';
 class UserModel {
   final String uid, name;
 
-  String? phone, email, photoUrl;
+  String? phone, email, photoUrl, oldUid;
   int? joinedOn;
   UserStatus? status;
 
@@ -13,16 +13,18 @@ class UserModel {
     this.photoUrl,
     this.phone,
     this.joinedOn,
-    this.status
+    this.status,
+    this.oldUid
   });
 
   factory UserModel.fromJson(Map json) {
     return UserModel(
       json['uid'],
       json['name'],
-      email: json['email'] ?? "NA",
-      photoUrl: json['photoUrl'] ?? "NA",
-      phone: json['phone'] ?? "NA",
+      oldUid: json['oldUid'],
+      email: json['email'],
+      photoUrl: json['photoUrl'],
+      phone: json['phone'],
       joinedOn: json['joinedOn'] ?? 0,
       status: getUserStatusInstance(json['status'])
     );
@@ -36,7 +38,8 @@ class UserModel {
       'photoUrl': photoUrl,
       'phone': phone,
       'joinedOn': joinedOn,
-      'status': getUserStatusString(status)
+      'status': getUserStatusString(status),
+      'oldUid': oldUid
     };
   }
 

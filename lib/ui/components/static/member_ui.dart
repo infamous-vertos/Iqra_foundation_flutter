@@ -8,7 +8,8 @@ import '../../../gen/assets.gen.dart';
 class MemberUi extends StatelessWidget {
   final UserModel user;
   bool? isChecked;
-  MemberUi({super.key, required this.user, this.isChecked});
+  Function(UserModel)? onEdit;
+  MemberUi({super.key, required this.user, this.isChecked, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,15 @@ class MemberUi extends StatelessWidget {
                 color: Colors.green,
                 size: 16.r,
               ),
-            ) : Icon(Icons.arrow_forward)
+            ) : Visibility(
+              visible: onEdit != null,
+              child: InkWell(
+                onTap: (){
+                  onEdit?.call(user);
+                },
+                  child: Assets.icons.icEdit.svg(width: 20.w)
+              ),
+            )
           ],
         ),
       ),

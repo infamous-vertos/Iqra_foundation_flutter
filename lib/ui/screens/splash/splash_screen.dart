@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iqra/ui/components/button/responsive_button.dart';
@@ -15,27 +16,32 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Obx(() => Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Assets.logo.logo.image(width: 120.w),
         TextView(text: "Welcome to"),
         Assets.logo.textHorizontal.image(width: 200.w),
-        controller.isLoading.value
+        controller.error.isNotEmpty
+            ? Padding(
+              padding: EdgeInsets.only(top: 10.h),
+              child: TextView(text: controller.error.value, color: Colors.red, textAlign: TextAlign.center,),
+            )
+            : controller.isLoading.value
             ? Assets.anim.animLoadingDots.lottie(height: 70.h)
             : Padding(
-              padding: EdgeInsets.only(top: 20.h),
-              child: ResponsiveButton(
-                  text: "Sign In with Google",
-                  width: 200.w,
-                  isOutlinedBtn: true.obs,
-                  bgColor: AppColors.styleBlack,
-                  icon: Assets.icons.icGoogle.svg(width: 20.h),
-                  funOnTap: controller.onTap,
-                ),
-            ),
+          padding: EdgeInsets.only(top: 20.h),
+          child: ResponsiveButton(
+            text: "Sign In with Google",
+            width: 200.w,
+            isOutlinedBtn: true.obs,
+            bgColor: AppColors.styleBlack,
+            icon: Assets.icons.icGoogle.svg(width: 20.h),
+            funOnTap: controller.onTap,
+          ),
+        ),
       ],
-    );
+    ));
   }
 }

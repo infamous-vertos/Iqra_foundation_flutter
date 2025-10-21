@@ -14,11 +14,15 @@ class MembersController extends GetxController{
   final isLoading = false.obs;
   final isLoadingMore = false.obs;
   Timer? _debounce;
+  final isAdmin = false.obs;
 
   @override
-  void onReady() {
+  Future<void> onReady() async {
     debugPrint("OnReady");
     fetchData(isRefresh: true);
+    final result = await FirebaseHelper.isAdmin();
+    isAdmin.value = result;
+    super.onReady();
   }
 
 
@@ -71,7 +75,7 @@ class MembersController extends GetxController{
     }
   }
 
-  Future<void> addMember(String name, String email, String phone) async {
+  Future<void> addMember(String name, String email, String phone, { UserModel? user }) async {
     debugPrint("Name - $name, Email - $email, Phone - $phone");
     if(name.length < 3){
       EasyLoading.showToast("Enter a valid name");
@@ -90,7 +94,7 @@ class MembersController extends GetxController{
 
     Global.hideKeyboard();
 
-    if(email.isNotEmpty){
+    if(user?.status != UserStatus.VERIFIED && email.isNotEmpty){
       final isEmailRegistered = await FirebaseHelper.isEmailRegistered(email);
       if(isEmailRegistered){
         EasyLoading.showToast("Email is already registered");
@@ -98,7 +102,7 @@ class MembersController extends GetxController{
       }
     }
 
-    final result = await FirebaseHelper.addMember(name, email, phone);
+    final result = await FirebaseHelper.addMember(name, email, phone, uid: user?.uid);
     if(result) {
       fetchData(isRefresh: true);
       Get.back();

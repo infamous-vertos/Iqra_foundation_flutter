@@ -14,7 +14,6 @@ class InputBox extends StatelessWidget {
   final Color? bgColor;
   final bool? isLabelVerticallyAtTop;
   final double? fontSize, height;
-  final bool? enabled;
   final String? pattern;
   final RxBool? isValidated;
   final double unitAvailable;
@@ -22,6 +21,7 @@ class InputBox extends StatelessWidget {
   final bool hideKeyboardOnMaxLength;
   final bool isOutlined;
   final RxString text;
+  bool enabled;
 
   InputBox({
     Key? key,
@@ -46,16 +46,21 @@ class InputBox extends StatelessWidget {
   }) : super(key: key);
 
   final TextEditingController textController = TextEditingController();
+  late RxBool isEnabled;
 
   @override
   Widget build(BuildContext context) {
     var isValidated = this.isValidated ?? true.obs;
+    textController.text = text.value;
+    isEnabled = RxBool(enabled);
 
     return Obx(
       () => Container(
         height: height,
         decoration: BoxDecoration(
-          color: isValidated.value || pattern == null
+          color: isEnabled.value == false
+              ? Colors.grey.shade200
+              : isValidated.value || pattern == null
               ? (bgColor ?? Colors.white)
               : Colors.red[100],
           borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
@@ -90,6 +95,21 @@ class InputBox extends StatelessWidget {
               vertical: 10.h,
               horizontal: 15.w,
             ),
+            disabledBorder: isOutlined
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade400,
+                      width: 1.h,
+                    ),
+                  )
+                : UnderlineInputBorder(
+                    borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
+                    borderSide: BorderSide(
+                      color: AppColors.styleBlack,
+                      width: 1.7.h,
+                    ),
+                  ),
             enabledBorder: isOutlined
                 ? OutlineInputBorder(
                     borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
@@ -131,7 +151,7 @@ class InputBox extends StatelessWidget {
               } else {
                 isValidated.value = false;
               }
-            }else{
+            } else {
               text.value = value;
             }
             if (hideKeyboardOnMaxLength && value.length == length) {

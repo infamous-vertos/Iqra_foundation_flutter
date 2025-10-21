@@ -15,16 +15,20 @@ class DashboardController extends GetxController{
   final expense = "---".obs;
   final isLoading = false.obs;
   final isLoadingMore = false.obs;
+  final isAdmin = false.obs;
   Timer? debounce;
 
   @override
-  void onReady() {
+  Future<void> onReady() async {
     // deposit();
     getTransactions();
     getTotal();
+
+    final result = await FirebaseHelper.isAdmin();
+    isAdmin.value = result;
+
     super.onReady();
   }
-
 
   @override
   void onClose() {

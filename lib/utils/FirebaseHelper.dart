@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,12 +13,40 @@ class FirebaseHelper{
   static DatabaseReference rootRef = FirebaseDatabase.instance.ref();
   static DatabaseReference membersRef = FirebaseDatabase.instance.ref("members");
   static DatabaseReference bankingRef = FirebaseDatabase.instance.ref("banking");
+  static DatabaseReference adminRef = FirebaseDatabase.instance.ref("admins");
   static DatabaseReference totalRef = bankingRef.child("total");
   static DatabaseReference balanceRef = totalRef.child("balance");
   static DatabaseReference expenseRef = totalRef.child("expense");
   static DatabaseReference transactionsRef = bankingRef.child("transactions");
 
   static FirebaseAuth auth = FirebaseAuth.instance;
+
+  //Check for admins
+  static bool? _isAdminMember;
+
+  static Future<bool> isAdmin() async {
+    try{
+      if(_isAdminMember != null) {
+        return _isAdminMember!;
+      }
+
+      final uid = getUserId();
+      if(uid == null) {
+        return false;
+      }
+
+      final result = await adminRef.child(uid).get();
+      if(result.exists && result.value == true){
+        _isAdminMember = true;
+        return true;
+      }
+      _isAdminMember = false;
+      return false;
+    }catch(e,s){
+      debugPrintStack(stackTrace: s);
+      return false;
+    }
+  }
 
   //Transaction related Ops
   static final transactionLimit = 20;
@@ -172,7 +198,7 @@ class FirebaseHelper{
 
   //User or Member related Ops
 
-  static Future<bool> updateUserData() async {
+  static Future<bool> updateUserData({required UserModel oldModel}) async {
     try{
       if(!await checkConnectivity()){
         return false;
@@ -184,15 +210,18 @@ class FirebaseHelper{
         if(data.exists) {
             return true;
         }
-        final model = UserModel(
+        final newModel = UserModel(
             user.uid,
-            user.displayName ?? "NA",
-            email: user.email ?? "NA",
-            photoUrl: user.photoURL ?? "NA",
-            phone: user.phoneNumber ?? "NA",
-            joinedOn: DateTime.now().millisecondsSinceEpoch
+            oldModel.name,
+            email: user.email,
+            photoUrl: user.photoURL,
+            phone: oldModel.phone,
+            joinedOn: oldModel.joinedOn,
+          status: UserStatus.VERIFIED,
+          oldUid: oldModel.uid
         );
-        getUserRef().update(model.toJson());
+        await getUserRef().set(newModel.toJson());
+        await membersRef.child(oldModel.uid).remove();
       }
       return true;
     }catch(e,s){
@@ -225,12 +254,38 @@ class FirebaseHelper{
     }
   }
 
+  static Future<UserModel?> getRegisteredUserModel(String email) async {
+    try{
+      if(!await checkConnectivity()){
+        return null;
+      }
+      final query = membersRef
+          .orderByChild("email")
+          .equalTo(email);
+      final data = await query.get();
+      debugPrint("isEmailRegisteredCalled - ${data.children}");
+      if(data.exists && data.children.isNotEmpty){
+        return UserModel.fromJson(data.children.first.value as Map);
+      }
+      return null;
+    }on FirebaseException catch (e) {
+      if (e.code == 'network-error') {
+        debugPrint('No internet connection: ${e.message}');
+      } else {
+        debugPrint('Firebase error: ${e.code} - ${e.message}');
+      }
+      return null;
+    } catch(e,s){
+      debugPrintStack(stackTrace: s);
+      return null;
+    }
+  }
+
   static Future<bool> isEmailRegistered(String email) async {
     try{
       if(!await checkConnectivity()){
         return true;
       }
-
       final query = membersRef
           .orderByChild("email")
           .equalTo(email);
@@ -253,21 +308,29 @@ class FirebaseHelper{
     }
   }
 
-  static Future<bool> addMember(String name, String email, String phone) async {
+  static Future<bool> addMember(String name, String email, String phone, { String? uid }) async {
     try{
       if(!await checkConnectivity()){
         return false;
       }
 
-      final ref = membersRef.push();
-      final user = UserModel(
-        ref.key!,
-        name,
-        email: email.isNotEmpty ? email : null,
-        phone: phone.isNotEmpty ? phone : null,
-        joinedOn: DateTime.now().millisecondsSinceEpoch
-      );
-      await ref.set(user.toJson());
+      final ref = uid != null ? membersRef.child(uid) : membersRef.push();
+      if(uid != null){
+        await ref.update({
+          "name": name,
+          "email": email.isNotEmpty ? email : null,
+          "phone": phone.isNotEmpty ? phone : null
+        });
+      }else{
+        final user = UserModel(
+            ref.key!,
+            name,
+            email: email.isNotEmpty ? email : null,
+            phone: phone.isNotEmpty ? phone : null,
+            joinedOn: DateTime.now().millisecondsSinceEpoch
+        );
+        await ref.set(user.toJson());
+      }
       return true;
     }catch(e,s){
       debugPrintStack(stackTrace: s);

@@ -21,8 +21,10 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: Column(
+    return Obx(() => Scaffold(
+      floatingActionButton: controller.isAdmin.isFalse
+      ? Container()
+      : Column(
         mainAxisSize: MainAxisSize.min,
         spacing: 10.h,
         children: [
@@ -59,7 +61,7 @@ class DashboardScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Obx(() => Padding(
+        child: Padding(
           padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 5.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +119,7 @@ class DashboardScreen extends StatelessWidget {
                     children: [
                       for(var item in controller.transactions.reversed)
                         ActivityTile(
-                          item: item
+                            item: item
                         ),
                       Visibility(
                         visible: controller.transactions.length % FirebaseHelper.transactionLimit == 0,
@@ -144,9 +146,9 @@ class DashboardScreen extends StatelessWidget {
               ),
             ],
           ),
-        )),
+        ),
       ),
-    );
+    ));
   }
 
   openDepositDialog() {

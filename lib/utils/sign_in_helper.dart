@@ -25,11 +25,11 @@ class SignInHelper{
         // accessToken: auth.accessToken, // Access token is available here
       );
       await FirebaseHelper.auth.signInWithCredential(credential);
-      final isUpdated = await FirebaseHelper.updateUserData();
-      if(!isUpdated) {
-        FirebaseHelper.auth.signOut();
-        return null;
-      }
+      // final isUpdated = await FirebaseHelper.updateUserData();
+      // if(!isUpdated) {
+      //   FirebaseHelper.auth.signOut();
+      //   return null;
+      // }
       debugPrint("SignIn Successfully");
       return account;
     } on GoogleSignInException catch (e) {

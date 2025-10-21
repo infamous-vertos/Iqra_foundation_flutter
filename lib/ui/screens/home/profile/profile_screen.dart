@@ -34,7 +34,9 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Align(
                           alignment: Alignment.centerRight,
-                          child: IconButton(onPressed: (){}, icon: Icon(Icons.logout_rounded)),
+                          child: IconButton(onPressed: (){
+                            controller.signOut();
+                          }, icon: Icon(Icons.logout_rounded, color: Colors.red,)),
                       ),
 
                       Container(
@@ -47,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(100.r),
                           child: Image.network(
-                            controller.user.value!.photoUrl!,
+                            controller.user.value?.photoUrl ?? "NA",
                             width: 40.w,
                             height: 40.w,
                             fit: BoxFit.cover,

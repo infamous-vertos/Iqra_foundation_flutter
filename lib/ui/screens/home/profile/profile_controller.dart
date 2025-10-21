@@ -45,8 +45,8 @@ class ProfileController extends GetxController{
     isLoading.value = false;
   }
 
-  signOut(){
-    FirebaseHelper.auth.signOut();
+  signOut() async {
+    await FirebaseHelper.auth.signOut();
     Get.offAllNamed(Routes.splash);
   }
 }
